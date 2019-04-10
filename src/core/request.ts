@@ -92,7 +92,7 @@ export class Request {
   static setProxy(proxyUrl) {
     if (!Helpers.isValidUrl(proxyUrl)) throw new Error('`proxyUrl` argument is not an valid url');
     const object = { agent: new ProxyAgent(proxyUrl) };
-    Request.requestClient = request.defaults(object);
+    Request.requestClient = request.defaults(object as any);
   }
 
   _transform = t => t;
@@ -296,7 +296,7 @@ export class Request {
       this.session.requestEnd$.next(rawResponse);
       const parsedResponse = this.parseMiddleware(rawResponse);
       const json = parsedResponse.body;
-      if (_.isObject(json) && json.status === 'ok') return _.omit(parsedResponse.body, 'status');
+      if (_.isObject(json) && (json as any).status === 'ok') return _.omit(parsedResponse.body, 'status');
       if (_.isString(json.message) && json.message.toLowerCase().includes('transcode timeout'))
         throw new Exceptions.TranscodeTimeoutError();
       throw new Exceptions.RequestError(json);

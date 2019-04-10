@@ -42,7 +42,7 @@ export class ParseError extends APIError {
 }
 
 export class ActionSpamError extends APIError {
-  constructor(public json) {
+  constructor(public json: any) {
     super('This action was disabled due to block from instagram!');
     this.json = json;
   }
@@ -57,8 +57,8 @@ export class ActionSpamError extends APIError {
   }
 
   getBlockTime() {
-    if (_.isObject(this.json) && _.isString(this.json.feedback_message)) {
-      const hours = this.json.feedback_message.match(/(\d+)(\s)*hour(s)/);
+    if (_.isObject(this.json) && _.isString((this.json as any).feedback_message)) {
+      const hours = (this.json as any).feedback_message.match(/(\d+)(\s)*hour(s)/);
       if (!hours || !_.isArray(hours)) return 0;
       const blockTime = parseInt(hours[1]) * 60 * 60 * 1000;
       return blockTime + 1000 * 60 * 5;
